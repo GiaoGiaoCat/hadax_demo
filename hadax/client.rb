@@ -75,21 +75,17 @@ module Hadax
 
     def http_get(action, data = nil)
       http, uri = set_http_client(action)
-      request = Net::HTTP::Get.new(uri.request_uri)
+      request = Net::HTTP::Get.new(uri.request_uri, { 'Content-Type' => 'application/x-www-form-urlencoded' })
       response = http.request(request)
       response.body
     end
 
     def http_post(action, data = nil)
       http, uri = set_http_client(action)
-      request = Net::HTTP::Post.new(uri.request_uri, initheader)
+      request = Net::HTTP::Post.new(uri.request_uri, { 'Content-Type' => 'application/json' })
       request.body = data.to_json
       response = http.request(request)
       response.body
-    end
-
-    def initheader
-      { 'Content-Type' => 'application/json' }
     end
 
     def set_http_client(action)
