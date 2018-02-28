@@ -1,5 +1,13 @@
+require 'net/http'
+require 'uri'
+require 'json'
+require 'digest/md5'
+require 'base64'
+
 module Hadax
   class Client
+    API_URL = "http://sdk.open.api.igexin.com/apiex.htm"
+    
     attr :access_key, :secret_key, :status
 
     def initialize(access_key, secret_key)
