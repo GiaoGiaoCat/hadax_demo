@@ -20,26 +20,28 @@ module Hadax
 
     # TODO: 买入数量要根据自己现金决定
     def open_a_position(symbol_pair, price)
-      place_order('buy-limit', symbol_pair, price, 100)
+      puts @account_id
+      # place_order('buy-limit', symbol_pair, price, 10)
     end
 
     # TODO: 卖出数量要根据自己库存决定
     def close_a_position(symbol_pair, price)
-      place_order('sell-limit', symbol_pair, price, 100)
+      # place_order('sell-limit', symbol_pair, price, 10)
     end
 
     private
 
     def get_account_id
-      http_get(:accouts)
+      data = package_data.merge({"Signature": 'some sign'})
+      http_get(:accounts)
     end
 
     def place_order(order_type, symbol_pair, price, amount)
-      data = package_data({ amount: amount, price: price, symbol: symbol_pair, type: order_type })
+      data = package_data({ account_id: @account_id, amount: amount, price: price, symbol: symbol_pair, type: order_type })
       http_post(:place_order, data)
     end
 
-    def sign(method: 'GET', action: '', params: params)
+    def sign(method: 'GET', action: '', params:)
       do_sign populate_signee(method: 'GET', action: '', params: params)
     end
 
@@ -69,20 +71,26 @@ module Hadax
       end
     end
 
-    def package_data(params)
-      { 'account-id': @account_id }.merge(params)
+    def package_data(params = {})
+      {
+        "AccessKeyId": @access_key,
+        "SignatureMethod": "HmacSHA256",
+        "SignatureVersion": "2",
+        "Timestamp": Time.now.getutc.strftime("%Y-%m-%dT%H:%M:%S")
+      }.merge(params)
     end
 
     def http_get(action, data = nil)
       http, uri = set_http_client(action)
-      request = Net::HTTP::Get.new(uri.request_uri, { 'Content-Type' => 'application/x-www-form-urlencoded' })
+      request = Net::HTTP::Get.new(uri.request_uri, header)
+      request.body = data.to_json
       response = http.request(request)
       response.body
     end
 
     def http_post(action, data = nil)
       http, uri = set_http_client(action)
-      request = Net::HTTP::Post.new(uri.request_uri, { 'Content-Type' => 'application/json' })
+      request = Net::HTTP::Post.new(uri.request_uri, header)
       request.body = data.to_json
       response = http.request(request)
       response.body
@@ -99,8 +107,17 @@ module Hadax
     def api_path(action)
       case action
       when :place_order then '/order/orders/place'
-      when :account then '/account/accounts'
+      when :accounts then '/account/accounts'
       end
+    end
+
+    def header
+      {
+        'Content-Type'=> 'application/json',
+        'Accept' => 'application/json',
+        'Accept-Language' => 'zh-CN',
+        'User-Agent'=> 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36'
+      }
     end
   end
 end

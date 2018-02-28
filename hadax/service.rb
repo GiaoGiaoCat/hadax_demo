@@ -14,7 +14,7 @@ module Hadax
     end
 
     def close_a_position(symbol_pair, ask_price)
-      @client.close_a_position(symbol_pair, bid_price)
+      @client.close_a_position(symbol_pair, ask_price)
       change_status(0)
     end
 
