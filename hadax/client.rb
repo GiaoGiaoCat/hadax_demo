@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 require 'digest/md5'
 require 'base64'
+require 'openssl'
 
 module Hadax
   class Client
@@ -37,9 +38,34 @@ module Hadax
       http_post(:place_order, data)
     end
 
-    # TODO: 签名动作
-    def sign
-      # ...
+    def sign(method: 'GET', action: '', params: params)
+      do_sign populate_signee(method: 'GET', action: '', params: params)
+    end
+
+    def populate_signee(method: 'GET', action: '', params: {})
+      "#{method}\n" +
+      "api.huobi.pro\n" +
+      "#{action}\n" +
+      sorted_params(method: method, params: params)
+    end
+
+    def do_sign(data = '')
+      OpenSSL::HMAC.hexdigest("SHA256", secret_key, data)
+    end
+
+    def sorted_params(method: 'GET', params: {})
+      # "AccessKeyId=e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2017-05-11T15%3A19%3A30&order-id=1234567890"
+      base_params = {
+        AccessKeyId: access_key,
+        SignatureMethod: 'HmacSHA256',
+        SignatureVersion: 2,
+        Timestamp: URI.encode(Time.now.utc.strftime("%Y-%m-%d %H:%M:%S"))
+      }
+      if method == 'GET'
+        base_params.merge(params).compact.sort.to_h.join('&')
+      else
+        base_params.compact.sort.to_h.join('&')
+      end
     end
 
     def package_data(params)
