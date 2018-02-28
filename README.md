@@ -1,5 +1,7 @@
 ## 用法
 
+`chmod +x hit.rb`
+
 ### 参数
 
 * access_key
@@ -13,7 +15,7 @@ unix 时间戳转换工具 http://tool.chinaz.com/Tools/unixtime.aspx
 
 ### 用例
 
-`./hadax.rb 'xxx', 'xxx', 'btcusdt', '100.1', '120.5', '1519758090'`
+`./hit.rb 'xxx', 'xxx', 'btcusdt', '100.1', '120.5', '1519758090'`
 
 
 ## Client 代码相关参数
