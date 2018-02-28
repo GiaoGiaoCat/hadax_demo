@@ -4,7 +4,7 @@ require 'json'
 require 'digest/md5'
 require 'base64'
 require 'openssl'
-require 'rails/all'
+require 'rack'
 
 module Hadax
   class Client
@@ -13,6 +13,7 @@ module Hadax
     attr_reader :access_key, :secret_key
 
     def initialize(access_key, secret_key)
+      @uri = URI.parse "https://api.huobi.pro/"
       @access_key = access_key
       @secret_key = secret_key
       @account_id = get_account_id
@@ -32,43 +33,43 @@ module Hadax
     private
 
     def get_account_id
-      data = package_data.merge({"Signature": 'some sign'})
-      http_get(:accounts)
+      path = "/v1/account/accounts"
+      request_method = "GET"
+      params ={}
+      json = util(path, params, request_method)
+    end
+
+    def util(path, params, request_method)
+      h =  {
+        "AccessKeyId"=>@access_key,
+        "SignatureMethod"=>"HmacSHA256",
+        "SignatureVersion"=>2,
+        "Timestamp"=> Time.now.getutc.strftime("%Y-%m-%dT%H:%M:%S")
+      }
+      h = h.merge(params) if request_method == "GET"
+      data = "#{request_method}\napi.huobi.pro\n#{path}\n#{Rack::Utils.build_query(hash_sort(h))}"
+      h["Signature"] = sign(data)
+      url = "https://api.huobi.pro#{path}?#{Rack::Utils.build_query(h)}"
+      http = Net::HTTP.new(@uri.host, @uri.port)
+      http.use_ssl = true
+      begin
+        JSON.parse http.send_request(request_method, url, JSON.dump(params),@header).body
+      rescue Exception => e
+        {"message" => 'error' ,"request_error" => e.message}
+      end
+    end
+
+    def sign(data)
+      Base64.encode64(OpenSSL::HMAC.digest('sha256', @secret_key, data)).gsub("\n","")
+    end
+
+    def hash_sort(ha)
+      Hash[ha.sort_by{ |key, val| key }]
     end
 
     def place_order(order_type, symbol_pair, price, amount)
       data = package_data({ account_id: @account_id, amount: amount, price: price, symbol: symbol_pair, type: order_type })
       http_post(:place_order, data)
-    end
-
-    def sign(method: 'GET', action: '', params:)
-      do_sign populate_signee(method: 'GET', action: '', params: params)
-    end
-
-    def populate_signee(method: 'GET', action: '', params: {})
-      "#{method}\n" +
-      "api.huobi.pro\n" +
-      "#{action}\n" +
-      sorted_params(method: method, params: params)
-    end
-
-    def do_sign(data = '')
-      OpenSSL::HMAC.hexdigest("SHA256", secret_key, data)
-    end
-
-    def sorted_params(method: 'GET', params: {})
-      # "AccessKeyId=e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2017-05-11T15%3A19%3A30&order-id=1234567890"
-      base_params = {
-        AccessKeyId: access_key,
-        SignatureMethod: 'HmacSHA256',
-        SignatureVersion: 2,
-        Timestamp: URI.encode(Time.now.utc.strftime("%Y-%m-%d %H:%M:%S"))
-      }
-      if method == 'GET'
-        base_params.merge(params).compact.sort.to_h.to_query.join('&')
-      else
-        base_params.compact.sort.to_h.join('&')
-      end
     end
 
     def package_data(params = {})
