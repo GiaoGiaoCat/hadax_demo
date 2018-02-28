@@ -28,14 +28,10 @@ module Hadax
 
     private
 
-    # TODO: get account_id by `GET /v1/account/accounts`.
     def get_account_id
-      # ...
-      # data = package_data(params)
-      # http_get(action, data)
+      http_get(:accouts)
     end
 
-    # TODO: place an order by `POST /v1/order/orders/place`
     def place_order(order_type, symbol_pair, price, amount)
       data = package_data({ amount: amount, price: price, symbol: symbol_pair, type: order_type })
       http_post(:place_order, data)
@@ -50,17 +46,19 @@ module Hadax
       { 'account-id': @account_id }.merge(params)
     end
 
-    # TODO: some code looks like `http_post`.
-    def http_get(action, data)
-      # ...
+    def http_get(action, data = nil)
+      http, uri = set_http_client(action)
+      request = Net::HTTP::Get.new(uri.request_uri)
+      response = http.request(request)
+      response.body
     end
 
-    def http_post(action, data)
+    def http_post(action, data = nil)
       http, uri = set_http_client(action)
-      req = Net::HTTP::Post.new(uri.path, initheader)
-      req.body = data.to_json
-      res = http.request(req)
-      res.body
+      request = Net::HTTP::Post.new(uri.request_uri, initheader)
+      request.body = data.to_json
+      response = http.request(request)
+      response.body
     end
 
     def initheader
@@ -68,17 +66,18 @@ module Hadax
     end
 
     def set_http_client(action)
-      path =
-        case action
-        when :place_order then '/order/orders/place'
-        when :account then '/account/accounts'
-        end
-      uri = URI.parse(host + path)
-
+      uri = URI.parse(API_URL + api_path(action))
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       [http, uri]
+    end
+
+    def api_path(action)
+      case action
+      when :place_order then '/order/orders/place'
+      when :account then '/account/accounts'
+      end
     end
   end
 end
