@@ -4,6 +4,7 @@ require 'json'
 require 'digest/md5'
 require 'base64'
 require 'openssl'
+require 'rails/all'
 
 module Hadax
   class Client
@@ -62,7 +63,7 @@ module Hadax
         Timestamp: URI.encode(Time.now.utc.strftime("%Y-%m-%d %H:%M:%S"))
       }
       if method == 'GET'
-        base_params.merge(params).compact.sort.to_h.join('&')
+        base_params.merge(params).compact.sort.to_h.to_query.join('&')
       else
         base_params.compact.sort.to_h.join('&')
       end
