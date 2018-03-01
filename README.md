@@ -10,7 +10,7 @@
 
 ### 用例
 
-`./hit.rb 'e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx' 'b0xxxxxx-c6xxxxxx-94xxxxxx-dxxxx'`
+`./get_account.rb 'e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx' 'b0xxxxxx-c6xxxxxx-94xxxxxx-dxxxx'`
 
 返回
 
