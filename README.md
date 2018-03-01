@@ -32,11 +32,10 @@
 * access_key
 * secret_key
 * 账户ID
-* 交易对
-* 买入价
-* 卖出价
 * 法币 - usdt/btc/eth
 * 货币 - 想要购买的电子货币，例如 ht/iost/eth
+* 买入价
+* 卖出价
 * 购买数量
 * 开始交易时间 - unix时间戳形式
 
