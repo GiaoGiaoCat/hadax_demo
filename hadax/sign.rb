@@ -17,14 +17,14 @@ module Hadax
 
     def signature
       signature = OpenSSL::HMAC.digest('sha256', secret_key, format_params)
-      Base64.encode64 signature
+      Base64.encode64(signature).gsub("\n", "")
     end
 
     private
 
       def format_params
         format_params = Rack::Utils.build_query(sort_params)
-        "#{request_method}\n#{API_SERVER}\n#{path}\n#{format_params}"
+        "#{request_method}\n#{API_DOMAIN}\n#{path}\n#{format_params}"
       end
 
       def sort_params
