@@ -33,7 +33,7 @@ module Hadax
     def close_a_position(account_id, symbol_pair, ask_price, amount)
       params = {
         "account-id" => account_id,
-        "amount" => 1,
+        "amount" => amount,
         "price" => ask_price,
         "source" => "api",
         "symbol" => symbol_pair,
