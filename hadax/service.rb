@@ -8,22 +8,22 @@ module Hadax
       @status = 0
     end
 
-    def get_account_id
+    def get_account
       @client.get("/v1/account/accounts")
     end
 
     # TODO: 买入数量要根据自己现金决定
-    def open_a_position(symbol_pair, bid_price)
+    def open_a_position(account_id, symbol_pair, bid_price)
       # @client.open_a_position(symbol_pair, bid_price)
       params = {
-        "account-id" => @account_id,
-        "amount" => 100,
+        "account-id" => account_id,
+        "amount" => 1,
         "price" => bid_price,
         "source" => "api",
         "symbol" => symbol_pair,
         "type" => "buy-limit"
       }
-      @client.post("/v1/order/orders/place", params)
+      puts @client.post("/v1/order/orders/place", params)
       change_status(1)
     end
 
