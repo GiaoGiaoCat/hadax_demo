@@ -43,6 +43,11 @@ module Hadax
         http.request(request)
       end
 
+      def do_http_with_body(uri, request, body)
+        request.body = JSON.dump body
+        do_http(uri, request)
+      end
+
       def build_url_with_params(request_method, path, params)
         query_string = make_query_string(request_method, path, params)
         URI.parse "https://#{API_SERVER}#{path}?#{query_string}"
@@ -50,13 +55,13 @@ module Hadax
 
       def make_query_string(request_method, path, params = {})
         h = {
-          "AccessKeyId" => access_key,
-          "SignatureMethod" => "HmacSHA256",
-          "SignatureVersion" => 2,
-          "Timestamp"=> Time.now.getutc.strftime("%Y-%m-%dT%H:%M:%S")
+          "AccessKeyId": access_key,
+          "SignatureMethod": "HmacSHA256",
+          "SignatureVersion": 2,
+          "Timestamp": Time.now.getutc.strftime("%Y-%m-%dT%H:%M:%S")
         }
         h.merge!(params) if request_method == "GET"
-        h["Signature"] = Hadax::Sign.new("GET", path, secret_key, h).signature
+        h["Signature"] = Hadax::Sign.new(request_method, path, secret_key, h).signature
         Rack::Utils.build_query(h)
       end
 
@@ -69,10 +74,10 @@ module Hadax
 
       def headers
         {
-          'Content-Type'=> 'application/json',
-          'Accept' => 'application/json',
-          'Accept-Language' => 'zh-CN',
-          'User-Agent'=> 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Language': 'zh-CN',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36'
         }
       end
   end

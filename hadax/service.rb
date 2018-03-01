@@ -14,7 +14,6 @@ module Hadax
 
     # TODO: 买入数量要根据自己现金决定
     def open_a_position(account_id, symbol_pair, bid_price)
-      # @client.open_a_position(symbol_pair, bid_price)
       params = {
         "account-id" => account_id,
         "amount" => 1,
@@ -28,8 +27,16 @@ module Hadax
     end
 
     # TODO: 卖出数量要根据自己库存决定
-    def close_a_position(symbol_pair, ask_price)
-      # @client.close_a_position(symbol_pair, ask_price)
+    def close_a_position(account_id, symbol_pair, ask_price)
+      params = {
+        "account-id" => account_id,
+        "amount" => 1,
+        "price" => ask_price,
+        "source" => "api",
+        "symbol" => symbol_pair,
+        "type" => "sell-limit"
+      }
+      puts @client.post("/v1/order/orders/place", params)
       change_status(0)
     end
 
