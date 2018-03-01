@@ -10,7 +10,7 @@
 
 ### 用例
 
-`./get_account.rb 'e2xxxxxx-99xxxxxx-84xxxxxx-7xxxx' 'b0xxxxxx-c6xxxxxx-94xxxxxx-dxxxx'`
+`./get_account.rb 'access key goes here' 'secret key goes here'`
 
 返回
 
@@ -44,3 +44,33 @@ unix 时间戳转换工具 http://tool.chinaz.com/Tools/unixtime.aspx
 ### 用例
 
 `./hit.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' '2.2725' '2.2720' 1 '1519758090'`
+
+
+### screen 用法
+```
+screen
+
+Hold a session open on a remote server. Manage multiple windows with a single SSH connection.
+
+- Start a new screen session:
+  screen
+
+- Start a new named screen session:
+  screen -S session_name
+
+- Start a new daemon and log the output to screenlog.x:
+  screen -dmLS session_name command
+
+- Show open screen sessions:
+  screen -ls
+
+- Reattach to an open screen:
+  screen -r session_name
+
+- Detach from inside a screen:
+  Ctrl + A, D
+
+- Kill a detached screen:
+  screen -X -S session_name quit
+
+```
