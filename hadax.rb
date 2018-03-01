@@ -1,5 +1,6 @@
 require 'forwardable'
 require_relative 'hadax/service'
+require_relative 'hadax/response'
 
 module Hadax
   class << self
