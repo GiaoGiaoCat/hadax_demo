@@ -9,11 +9,13 @@ module Hadax
     end
 
     def get_account
-      @client.get("/v1/account/accounts")
+      # @client.get("/v1/account/accounts")
+      @client.get("/v1/hadax/account/accounts")
     end
 
     def get_balance(account_id)
-      @client.get("/v1/account/accounts/#{account_id}/balance")
+      # @client.get("/v1/account/accounts/#{account_id}/balance")
+      @client.get("/v1/hadax/account/accounts/#{account_id}/balance")
     end
 
     def open_a_position(account_id, symbol_pair, bid_price, amount)
@@ -26,7 +28,8 @@ module Hadax
         "type" => "buy-limit"
       }
       puts "open_a_position"
-      puts @client.post("/v1/order/orders/place", params)
+      # puts @client.post("/v1/order/orders/place", params)
+      puts @client.post("/v1/hadax/order/orders/place", params)
       change_status(1)
     end
 
@@ -40,7 +43,8 @@ module Hadax
         "type" => "sell-limit"
       }
       puts "close_a_position"
-      puts @client.post("/v1/order/orders/place", params)
+      # puts @client.post("/v1/order/orders/place", params)
+      puts @client.post("/v1/hadax/order/orders/place", params)
       change_status(0)
     end
 

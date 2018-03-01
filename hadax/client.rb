@@ -8,7 +8,8 @@ require_relative 'sign'
 
 module Hadax
   class Client
-    API_SERVER = "api.huobi.pro"
+    # API_SERVER = "api.huobi.pro"
+    API_SERVER = "api.hadax.com"
 
     attr_reader :access_key, :secret_key
 
