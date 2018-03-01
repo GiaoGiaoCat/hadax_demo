@@ -7,9 +7,11 @@ def trade(symbol_pair, bid_price, ask_price)
 end
 
 def working(access_key, secret_key, symbol_pair, bid_price, ask_price, opening_time)
+  puts access_key
   @service = Hadax.initialize_service(access_key, secret_key)
 
-  trade(symbol_pair, bid_price, ask_price) # For dev.
+  # trade(symbol_pair, bid_price, ask_price) # For dev.
+  puts @service.get_account_id
 
   # For production.
   # loop do
