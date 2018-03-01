@@ -35,10 +35,13 @@
 * 交易对
 * 买入价
 * 卖出价
+* 法币 - usdt/btc/eth
+* 货币 - 想要购买的电子货币，例如 ht/iost/eth
+* 购买数量
 * 开始交易时间 - unix时间戳形式
 
 unix 时间戳转换工具 http://tool.chinaz.com/Tools/unixtime.aspx
 
 ### 用例
 
-`./hit.rb 'xxx' 'xxx' '3192742' 'btcusdt' '100.1' '120.5' '1519758090'`
+`./hit.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' '2.2725' '2.2720' 1 '1519758090'`
