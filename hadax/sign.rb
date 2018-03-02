@@ -4,7 +4,8 @@ require 'rack'
 
 module Hadax
   class Sign
-    API_DOMAIN = "api.huobi.pro"
+    # API_DOMAIN = "api.huobi.pro"
+    API_DOMAIN = "api.hadax.com"
 
     attr :request_method, :path, :secret_key, :params
 

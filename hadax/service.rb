@@ -9,12 +9,10 @@ module Hadax
     end
 
     def get_account
-      # @client.get("/v1/account/accounts")
-      @client.get("/v1/hadax/account/accounts")
+      @client.get("/v1/account/accounts")
     end
 
     def get_balance(account_id)
-      # @client.get("/v1/account/accounts/#{account_id}/balance")
       @client.get("/v1/hadax/account/accounts/#{account_id}/balance")
     end
 
