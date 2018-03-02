@@ -14,9 +14,9 @@ def trade(account_id, currency, coin, bid_price, ask_price, amount)
   @service.open_a_position(account_id, symbol_pair, bid_price, amount)
 
   loop do
-    ask_amount = get_balance(account_id, coin)
+    ask_amount = get_balance(account_id, coin).to_i
     @service.close_a_position(account_id, symbol_pair, ask_price, ask_amount)
-    sleep 3
+    sleep 5
   end
 end
 
