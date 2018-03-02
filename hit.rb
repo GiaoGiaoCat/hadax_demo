@@ -22,13 +22,14 @@ end
 
 def working(access_key, secret_key, account_id, currency, coin, bid_price, ask_price, amount, opening_time)
   @service = Hadax.initialize_service(access_key, secret_key)
-  trade(account_id, currency, coin, bid_price, ask_price, amount) # For dev.
+  # For dev.
+  # trade(account_id, currency, coin, bid_price, ask_price, amount)
 
   # For production.
-  # loop do
-  #   break trade(account_id, currency, coin, bid_price, ask_price, amount) if Time.now.to_i > opening_time.to_i
-  #   sleep 3
-  # end
+  loop do
+    break trade(account_id, currency, coin, bid_price, ask_price, amount) if Time.now.to_i >= opening_time.to_i
+    sleep 2
+  end
 end
 
 access_key = ARGV.shift
