@@ -2,10 +2,11 @@ require 'digest/md5'
 require 'base64'
 require 'rack'
 
+require_relative 'configuration'
+
 module Hadax
   class Sign
-    # API_DOMAIN = "api.huobi.pro"
-    API_DOMAIN = "api.hadax.com"
+    include Configuration
 
     attr :request_method, :path, :secret_key, :params
 
@@ -25,7 +26,7 @@ module Hadax
 
       def format_params
         format_params = Rack::Utils.build_query(sort_params)
-        "#{request_method}\n#{API_DOMAIN}\n#{path}\n#{format_params}"
+        "#{request_method}\n#{API_SERVER}\n#{path}\n#{format_params}"
       end
 
       def sort_params

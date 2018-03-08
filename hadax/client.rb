@@ -4,12 +4,12 @@ require 'json'
 require 'openssl'
 require 'rack'
 
+require_relative 'configuration'
 require_relative 'sign'
 
 module Hadax
   class Client
-    # API_SERVER = "api.huobi.pro"
-    API_SERVER = "api.hadax.com"
+    include Configuration
 
     attr_reader :access_key, :secret_key
 
