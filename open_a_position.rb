@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+require 'bigdecimal'
+
 require_relative 'hadax'
 
 def get_latest_bid_price(symbol_pair)
@@ -33,7 +35,7 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
   # 获取目标交易买一价格
   puts latest_bid_price = get_latest_bid_price(symbol_pair)
 
-  bid_price = latest_bid_price + 10.0 ** (-price_precision)
+  bid_price = (latest_bid_price + 10.0 ** (-price_precision)).round(price_precision)
   puts bid_price
 
   amount = (money_amount.to_f / bid_price).round(amount_precision)
