@@ -45,6 +45,26 @@ unix 时间戳转换工具 http://tool.chinaz.com/Tools/unixtime.aspx
 
 `./hit.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' '2.2725' '2.2720' 1 '1519758090'`
 
+# 给定交易对，以最低价下单
+## 用法
+
+首先 `chmod +x open_a_position.rb`
+
+## 参数
+
+依次为：
+
+* access_key
+* secret_key
+* 账户ID
+* 法币 - usdt/btc/eth
+* 货币 - 想要购买的电子货币，例如 ht/iost/eth
+* 购买数量
+
+### 用例
+
+`./open_a_position.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht'  1 
+
 
 ### screen 用法
 ```
