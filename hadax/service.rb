@@ -36,8 +36,8 @@ module Hadax
         "type" => "buy-limit"
       }
       puts "open_a_position"
-      # puts @client.post("/v1/order/orders/place", params)
-      puts @client.post("/v1/hadax/order/orders/place", params)
+      puts @client.post("/v1/order/orders/place", params)
+      # puts @client.post("/v1/hadax/order/orders/place", params)
       change_status(1)
     end
 
