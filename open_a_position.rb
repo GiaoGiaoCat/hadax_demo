@@ -20,12 +20,12 @@ def working(access_key, secret_key, account_id, currency, coin)
   @service = Hadax.initialize_service(access_key, secret_key)
 
   # 获取目标交易对精度，price-precision 为价格精度 amount-precision 为交易精度
-  # precision = get_precision(@service, currency, coin)
-  # price_precision = precision['price-precision']
-  # amount_precision = precision['amount-precision']
+  precision = get_precision(@service, currency, coin)
+  puts price_precision = precision['price-precision']
+  puts amount_precision = precision['amount-precision']
 
   # 获取目标交易买一价格
-  # latest_bid_price = get_latest_bid_price(@service, symbol_pair)
+  puts latest_bid_price = get_latest_bid_price(@service, symbol_pair)
 end
 
 access_key = ARGV.shift
