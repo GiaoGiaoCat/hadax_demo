@@ -21,7 +21,7 @@ def trade(account_id, currency, coin, bid_price, amount)
 end
 
 
-def working(access_key, secret_key, account_id, currency, coin, amount)
+def working(access_key, secret_key, account_id, currency, coin, money_amount)
   symbol_pair = "#{coin}#{currency}"
   @service = Hadax.initialize_service(access_key, secret_key)
 
@@ -36,6 +36,8 @@ def working(access_key, secret_key, account_id, currency, coin, amount)
   bid_price = latest_bid_price + 10.0 ** (-price_precision)
   puts bid_price
 
+  amount = (money_amount.to_f / bid_price).round(amount_precision)
+  puts amount
   trade(account_id, currency, coin, bid_price, amount)
 end
 
@@ -44,6 +46,6 @@ secret_key = ARGV.shift
 account_id = ARGV.shift
 currency = ARGV.shift
 coin = ARGV.shift
-amount = ARGV.shift
+money_amount = ARGV.shift
 
-working(access_key, secret_key, account_id, currency, coin, amount)
+working(access_key, secret_key, account_id, currency, coin, money_amount)
