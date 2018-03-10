@@ -1,15 +1,25 @@
 require_relative 'client'
+require_relative 'market_client'
 module Hadax
   class Service
-    attr :client, :status
+    attr :client, :status, :market_client
 
     def initialize(access_key, secret_key)
       @client = Hadax::Client.new(access_key, secret_key)
+      @market_client = MarketClient.new
       @status = 0
     end
 
     def get_account
       @client.get("/v1/account/accounts")
+    end
+
+    def get_market_depth(symbol_pair)
+      @market_client.get("/market/depth?symbol=#{symbol_pair}&type=step0")
+    end
+
+    def get_symbols
+      @market_client.get("/v1/common/symbols")
     end
 
     def get_balance(account_id)

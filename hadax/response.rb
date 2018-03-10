@@ -14,5 +14,9 @@ module Hadax
     def data
       res["data"]
     end
+
+    def tick
+      res["tick"]
+    end
   end
 end
