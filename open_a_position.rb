@@ -17,11 +17,18 @@ def get_precision(currency, coin)
   precision
 end
 
-def trade(account_id, currency, coin, bid_price, amount)
-  symbol_pair = "#{coin}#{currency}"
-  @service.open_a_position(account_id, symbol_pair, bid_price, amount)
+def get_order_field_amount(order_id)
+  result = @service.get_order(order_id)
+  res = Hadax::Response.new(result)
+  res.data["field-amount"].to_f
 end
 
+def trade(account_id, currency, coin, bid_price, amount)
+  symbol_pair = "#{coin}#{currency}"
+  result = @service.open_a_position(account_id, symbol_pair, bid_price, amount)
+  res = Hadax::Response.new(result)
+  res.data
+end
 
 def working(access_key, secret_key, account_id, currency, coin, money_amount)
   symbol_pair = "#{coin}#{currency}"
@@ -29,18 +36,23 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
 
   # 获取目标交易对精度，price-precision 为价格精度 amount-precision 为交易精度
   precision = get_precision(currency, coin)
-  puts price_precision = precision['price-precision']
-  puts amount_precision = precision['amount-precision']
+  price_precision = precision['price-precision']
+  amount_precision = precision['amount-precision']
 
   # 获取目标交易买一价格
-  puts latest_bid_price = get_latest_bid_price(symbol_pair)
-
+  latest_bid_price = get_latest_bid_price(symbol_pair)
   bid_price = (latest_bid_price + 10.0 ** (-price_precision)).round(price_precision)
-  puts bid_price
+
+  puts "价格精度 #{price_precision} 交易精度 #{amount_precision} 买一价格 #{latest_bid_price} 出价 #{bid_price}"
 
   amount = (money_amount.to_f / bid_price).round(amount_precision)
-  puts amount
-  trade(account_id, currency, coin, bid_price, amount)
+  order_id = trade(account_id, currency, coin, bid_price, amount)
+
+  loop do
+    field_amount = get_order_field_amount(order_id)
+    break puts "交易完成" if field_amount.round(amount_precision) == amount
+    sleep 10
+  end
 end
 
 access_key = ARGV.shift

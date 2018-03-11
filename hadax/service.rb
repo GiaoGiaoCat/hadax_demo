@@ -14,6 +14,10 @@ module Hadax
       @client.get("/v1/account/accounts")
     end
 
+    def get_order(order_id)
+      @client.get("/v1/order/orders/#{order_id}")
+    end
+
     def get_market_depth(symbol_pair)
       @market_client.get("/market/depth?symbol=#{symbol_pair}&type=step0")
     end
@@ -36,9 +40,9 @@ module Hadax
         "type" => "buy-limit"
       }
       puts "open_a_position"
-      puts @client.post("/v1/order/orders/place", params)
+      @client.post("/v1/order/orders/place", params)
       # puts @client.post("/v1/hadax/order/orders/place", params)
-      change_status(1)
+      # change_status(1)
     end
 
     def close_a_position(account_id, symbol_pair, ask_price, amount)
@@ -51,9 +55,9 @@ module Hadax
         "type" => "sell-limit"
       }
       puts "close_a_position"
-      # puts @client.post("/v1/order/orders/place", params)
-      puts @client.post("/v1/hadax/order/orders/place", params)
-      change_status(0)
+      @client.post("/v1/order/orders/place", params)
+      # @client.post("/v1/hadax/order/orders/place", params)
+      # change_status(0)
     end
 
     def can_open_a_position?
