@@ -30,6 +30,10 @@ def trade(account_id, currency, coin, bid_price, amount)
   res.data
 end
 
+def should
+
+end
+
 def working(access_key, secret_key, account_id, currency, coin, money_amount)
   symbol_pair = "#{coin}#{currency}"
   @service = Hadax.initialize_service(access_key, secret_key)
@@ -41,7 +45,8 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
 
   # 获取目标交易买一价格
   latest_bid_price = get_latest_bid_price(symbol_pair)
-  bid_price = (latest_bid_price + 10.0 ** (-price_precision)).round(price_precision)
+  # NOTE: 这里为了方便测试，设置买入价低于当前买一价格，上线时候请把 `latest_bid_price -` 改成 `latest_bid_price +`
+  bid_price = (latest_bid_price - 10.0 ** (-price_precision)).round(price_precision)
 
   puts "价格精度 #{price_precision} 交易精度 #{amount_precision} 买一价格 #{latest_bid_price} 出价 #{bid_price}"
 
@@ -50,7 +55,17 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
 
   loop do
     field_amount = get_order_field_amount(order_id)
-    break puts "交易完成" if field_amount.round(amount_precision) == amount
+    if field_amount.round(amount_precision) == amount
+      break puts "交易完成"
+    else
+      new_latest_bid_price = get_latest_bid_price(symbol_pair)
+      new_bid_price = (latest_bid_price + 10.0 ** (-price_precision)).round(price_precision)
+      if new_bid_price == bid_price
+        puts "买一价没变，等待下次循环"
+      else
+        puts "买一价偏离，等待撤单重新下单"
+      end
+    end
     sleep 10
   end
 end
