@@ -34,6 +34,12 @@ def should
 
 end
 
+def cancel_order(order_id)
+  result = @service.cancel_order(order_id)
+  res = Hadax::Response.new(result)
+  res.data["field-amount"].to_f
+end
+
 def working(access_key, secret_key, account_id, currency, coin, money_amount)
   symbol_pair = "#{coin}#{currency}"
   @service = Hadax.initialize_service(access_key, secret_key)
@@ -53,7 +59,10 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
   amount = (money_amount.to_f / bid_price).round(amount_precision)
   order_id = trade(account_id, currency, coin, bid_price, amount)
 
+puts "下单完毕，出价 #{bid_price} 数量 #{amount} 订单 #{order_id}"
+
   loop do
+    sleep 10
     field_amount = get_order_field_amount(order_id)
     if field_amount.round(amount_precision) == amount
       break puts "交易完成"
@@ -63,10 +72,14 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
       if new_bid_price == bid_price
         puts "买一价没变，等待下次循环"
       else
-        puts "买一价偏离，等待撤单重新下单"
+        puts "买一价偏离，更新价格，撤单重新下单"
+        cancel_order(order_id)
+        bid_price = new_bid_price
+        amount = (money_amount.to_f / bid_price).round(amount_precision)
+        order_id = trade(account_id, currency, coin, bid_price, amount)
+        puts "更新完毕，出价 #{bid_price} 数量 #{amount} 订单 #{order_id}"
       end
     end
-    sleep 10
   end
 end
 

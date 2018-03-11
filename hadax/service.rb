@@ -30,6 +30,10 @@ module Hadax
       @client.get("/v1/hadax/account/accounts/#{account_id}/balance")
     end
 
+    def cancel_order(order_id)
+      @client.post("/v1/order/orders/#{order_id}/submitcancel")
+    end
+
     def open_a_position(account_id, symbol_pair, bid_price, amount)
       params = {
         "account-id" => account_id,
