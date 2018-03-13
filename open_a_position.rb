@@ -54,7 +54,8 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
   # 获取目标交易买一价格
   latest_bid_price = get_latest_bid_price(symbol_pair)
   # NOTE: 这里为了方便测试，设置买入价低于当前买一价格，上线时候请把 `latest_bid_price -` 改成 `latest_bid_price +`
-  bid_price = (latest_bid_price - 10.0 ** (-price_precision) * 3).round(price_precision)
+  # 最后一次提交我已经改过来了，你可以直接拿着用
+  bid_price = (latest_bid_price + 10.0 ** (-price_precision)).round(price_precision)
 
   puts "价格精度 #{price_precision} 交易精度 #{amount_precision} 买一价格 #{latest_bid_price} 出价 #{bid_price}"
 
