@@ -23,15 +23,17 @@ def get_order_field_amount(order_id)
   res.data["field-amount"].to_f
 end
 
+def get_order_field_cash_amount(order_id)
+  result = @service.get_order(order_id)
+  res = Hadax::Response.new(result)
+  res.data["field-cash-amount"].to_f
+end
+
 def trade(account_id, currency, coin, bid_price, amount)
   symbol_pair = "#{coin}#{currency}"
   result = @service.open_a_position(account_id, symbol_pair, bid_price, amount)
   res = Hadax::Response.new(result)
   res.data
-end
-
-def should
-
 end
 
 def cancel_order(order_id)
@@ -52,7 +54,7 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
   # 获取目标交易买一价格
   latest_bid_price = get_latest_bid_price(symbol_pair)
   # NOTE: 这里为了方便测试，设置买入价低于当前买一价格，上线时候请把 `latest_bid_price -` 改成 `latest_bid_price +`
-  bid_price = (latest_bid_price - 10.0 ** (-price_precision)).round(price_precision)
+  bid_price = (latest_bid_price - 10.0 ** (-price_precision) * 3).round(price_precision)
 
   puts "价格精度 #{price_precision} 交易精度 #{amount_precision} 买一价格 #{latest_bid_price} 出价 #{bid_price}"
 
@@ -72,10 +74,16 @@ puts "下单完毕，出价 #{bid_price} 数量 #{amount} 订单 #{order_id}"
       if new_bid_price == bid_price
         puts "买一价没变，等待下次循环"
       else
-        puts "买一价偏离，更新价格，撤单重新下单"
+        puts "买一价偏离，更新价格，准备重做订单"
+        field_cash_amount = get_order_field_cash_amount(order_id).round(price_precision)
+        if field_cash_amount.zero?
+          puts "订单没有成交部分，正在撤单并重新下单"
+        else
+          puts "订单已成交 #{field_cash_amount}，正在撤单，需重新计算买入量再下单"
+        end
         cancel_order(order_id)
         bid_price = new_bid_price
-        amount = (money_amount.to_f / bid_price).round(amount_precision)
+        amount = ((money_amount.to_f - field_cash_amount) / bid_price).round(amount_precision)
         order_id = trade(account_id, currency, coin, bid_price, amount)
         puts "更新完毕，出价 #{bid_price} 数量 #{amount} 订单 #{order_id}"
       end
