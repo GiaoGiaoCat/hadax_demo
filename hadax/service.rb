@@ -34,15 +34,18 @@ module Hadax
       @client.post("/v1/order/orders/#{order_id}/submitcancel")
     end
 
-    def open_a_position(account_id, symbol_pair, bid_price, amount)
+    def open_a_position(account_id, symbol_pair, bid_price, amount, market = nil)
       params = {
         "account-id" => account_id,
         "amount" => amount,
-        "price" => bid_price,
         "source" => "api",
         "symbol" => symbol_pair,
-        "type" => "buy-limit"
       }
+      if market
+        params.merge!({ "type" => "buy-market" })
+      else
+        params.merge!({ "price" => bid_price, "type" => "buy-limit" })
+      end
       puts "open_a_position"
       @client.post("/v1/order/orders/place", params)
       # puts @client.post("/v1/hadax/order/orders/place", params)

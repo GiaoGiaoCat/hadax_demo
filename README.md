@@ -60,10 +60,17 @@ unix 时间戳转换工具 http://tool.chinaz.com/Tools/unixtime.aspx
 * 法币 - usdt/btc/eth
 * 货币 - 想要购买的电子货币，例如 ht/iost/eth
 * 购买数量
+* 购买方式 - 参数为空则限价买入，添加参数 `market` 则按市价买入
 
 ### 用例
 
-`./open_a_position.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht'  1 
+限价最低价买入
+
+`./open_a_position.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' 1`
+
+市价买入
+
+`./open_a_position.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' 1 market`
 
 
 ### screen 用法

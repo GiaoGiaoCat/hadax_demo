@@ -29,9 +29,9 @@ def get_order_field_cash_amount(order_id)
   res.data["field-cash-amount"].to_f
 end
 
-def trade(account_id, currency, coin, bid_price, amount)
+def trade(account_id, currency, coin, bid_price, amount, market = nil)
   symbol_pair = "#{coin}#{currency}"
-  result = @service.open_a_position(account_id, symbol_pair, bid_price, amount)
+  result = @service.open_a_position(account_id, symbol_pair, bid_price, amount, market)
   res = Hadax::Response.new(result)
   res.data
 end
@@ -42,7 +42,7 @@ def cancel_order(order_id)
   res.data["field-amount"].to_f
 end
 
-def working(access_key, secret_key, account_id, currency, coin, money_amount)
+def working(access_key, secret_key, account_id, currency, coin, money_amount, market = nil)
   symbol_pair = "#{coin}#{currency}"
   @service = Hadax.initialize_service(access_key, secret_key)
 
@@ -60,9 +60,15 @@ def working(access_key, secret_key, account_id, currency, coin, money_amount)
   puts "价格精度 #{price_precision} 交易精度 #{amount_precision} 买一价格 #{latest_bid_price} 出价 #{bid_price}"
 
   amount = (money_amount.to_f / bid_price).round(amount_precision)
-  order_id = trade(account_id, currency, coin, bid_price, amount)
+  if market
+    puts "以上信息仅为参考，直接市价买入"
+    order_id = trade(account_id, currency, coin, bid_price, amount, market)
+    return puts "下单完毕，自己去交易所看吧，订单 #{order_id}"
+  else
+    order_id = trade(account_id, currency, coin, bid_price, amount)
+  end
 
-puts "下单完毕，出价 #{bid_price} 数量 #{amount} 订单 #{order_id}"
+  puts "下单完毕，出价 #{bid_price} 数量 #{amount} 订单 #{order_id}"
 
   loop do
     sleep 10
@@ -98,5 +104,6 @@ account_id = ARGV.shift
 currency = ARGV.shift
 coin = ARGV.shift
 money_amount = ARGV.shift
+market = ARGV.shift
 
-working(access_key, secret_key, account_id, currency, coin, money_amount)
+working(access_key, secret_key, account_id, currency, coin, money_amount, market)
