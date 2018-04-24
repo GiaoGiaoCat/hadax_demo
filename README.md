@@ -93,7 +93,7 @@ unix 时间戳转换工具 http://tool.chinaz.com/Tools/unixtime.aspx
 
 ### 用例
 
-`./hit.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' 1.1 0.01 3 1.5`
+`./open_positions.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' 1.1 0.01 3 1.5`
 
 以上例句的意思是： 以 1.1 美金起步，每次增加 0.01 美金，每次购买 1.5 个。一共 3 次。
 执行之后的结果如下：
