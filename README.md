@@ -72,6 +72,33 @@ unix 时间戳转换工具 http://tool.chinaz.com/Tools/unixtime.aspx
 
 `./open_a_position.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' 1 market`
 
+# 给定交易对，指定价格和步长，批量下单
+## 用法
+
+首先 `chmod +x open_positions.rb`
+
+## 参数
+
+依次为：
+
+* access_key
+* secret_key
+* 账户ID
+* 法币 - usdt/btc/eth
+* 货币 - 想要购买的电子货币，例如 ht/iost/eth
+* 买入价
+* 步长（每次增加的金额）
+* 步数（循环几次）
+* 每次购买数量
+
+### 用例
+
+`./hit.rb 'xxx' 'xxx' '2098712' 'usdt' 'ht' 1.1 0.01 3 1.5`
+
+以上例句的意思是： 以 1.1 美金起步，每次增加 0.01 美金，每次购买 1.5 个。一共 3 次。
+执行之后的结果如下：
+
+![](https://raw.githubusercontent.com/wjp2013/hadax_demo/master/assets/Jietu20180424-222413.jpg)
 
 ### screen 用法
 ```
